@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package spotify;
+
+option go_package = "proto/";
+
+import "google/protobuf/empty.proto";
+
+service SpotifyService {
+    rpc UpdateArtists(UpdateArtistsRequest) returns (google.protobuf.Empty) {}
+}
+
+// UpdateArtists is a request to update the artists for a user (this will be replaced with a proper update algorithm)
+message UpdateArtistsRequest {
+    string user_id = 1;
+}
