@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SpotifyServiceClient interface {
 	UpdateArtists(ctx context.Context, in *UpdateArtistsRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	GetArtists(ctx context.Context, in *GetArtistsRequest, opts ...grpc.CallOption) (*GetArtistsResponse, error)
 }
 
 type spotifyServiceClient struct {
@@ -43,11 +44,21 @@ func (c *spotifyServiceClient) UpdateArtists(ctx context.Context, in *UpdateArti
 	return out, nil
 }
 
+func (c *spotifyServiceClient) GetArtists(ctx context.Context, in *GetArtistsRequest, opts ...grpc.CallOption) (*GetArtistsResponse, error) {
+	out := new(GetArtistsResponse)
+	err := c.cc.Invoke(ctx, "/spotify.SpotifyService/GetArtists", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SpotifyServiceServer is the server API for SpotifyService service.
 // All implementations must embed UnimplementedSpotifyServiceServer
 // for forward compatibility
 type SpotifyServiceServer interface {
 	UpdateArtists(context.Context, *UpdateArtistsRequest) (*empty.Empty, error)
+	GetArtists(context.Context, *GetArtistsRequest) (*GetArtistsResponse, error)
 	mustEmbedUnimplementedSpotifyServiceServer()
 }
 
@@ -57,6 +68,9 @@ type UnimplementedSpotifyServiceServer struct {
 
 func (UnimplementedSpotifyServiceServer) UpdateArtists(context.Context, *UpdateArtistsRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateArtists not implemented")
+}
+func (UnimplementedSpotifyServiceServer) GetArtists(context.Context, *GetArtistsRequest) (*GetArtistsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArtists not implemented")
 }
 func (UnimplementedSpotifyServiceServer) mustEmbedUnimplementedSpotifyServiceServer() {}
 
@@ -89,6 +103,24 @@ func _SpotifyService_UpdateArtists_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SpotifyService_GetArtists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArtistsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SpotifyServiceServer).GetArtists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/spotify.SpotifyService/GetArtists",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SpotifyServiceServer).GetArtists(ctx, req.(*GetArtistsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SpotifyService_ServiceDesc is the grpc.ServiceDesc for SpotifyService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -99,6 +131,10 @@ var SpotifyService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateArtists",
 			Handler:    _SpotifyService_UpdateArtists_Handler,
+		},
+		{
+			MethodName: "GetArtists",
+			Handler:    _SpotifyService_GetArtists_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
