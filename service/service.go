@@ -2,15 +2,13 @@ package service
 
 import (
 	"context"
-	"strconv"
-	"time"
+	"os"
 
 	"github.com/Fan-Fuse/spotify-service/clients"
-	"github.com/Fan-Fuse/spotify-service/db"
 	"github.com/Fan-Fuse/spotify-service/proto"
-	"github.com/golang/protobuf/ptypes/empty"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/clientcredentials"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -28,7 +26,51 @@ func RegisterServer(s *grpc.Server) {
 	proto.RegisterSpotifyServiceServer(s, &server{})
 }
 
-func (s *server) UpdateArtists(ctx context.Context, req *proto.UpdateArtistsRequest) (*empty.Empty, error) {
+func (s *server) GetArtist(ctx context.Context, req *proto.GetArtistRequest) (*proto.SpotifyArtist, error) {
+	// Create an oauth token
+	config := &clientcredentials.Config{
+		ClientID:     os.Getenv("SPOTIFY_ID"),
+		ClientSecret: os.Getenv("SPOTIFY_SECRET"),
+		TokenURL:     spotifyauth.TokenURL,
+	}
+	token, err := config.Token(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "failed to get token")
+	}
+
+	// Next, get the artist from the user's library using their spotify ID
+	httpClient := spotifyauth.New().Client(ctx, token)
+	client := spotify.New(httpClient)
+	artist, err := client.GetArtist(ctx, spotify.ID(req.Id))
+	if err != nil {
+		return nil, status.Error(codes.Internal, "failed to get artist")
+	}
+
+	// Build the images
+	var images []*proto.SpotifyImage
+	for _, image := range artist.Images {
+		images = append(images, &proto.SpotifyImage{
+			Height: int32(image.Height),
+			Width:  int32(image.Width),
+			Url:    image.URL,
+		})
+	}
+
+	// Build the genres
+	var genres []string
+	for _, genre := range artist.Genres {
+		genres = append(genres, genre)
+	}
+
+	return &proto.SpotifyArtist{
+		Id:     artist.ID.String(),
+		Name:   artist.Name,
+		Images: images,
+		Genres: genres,
+	}, nil
+}
+
+func (s *server) GetArtistForUser(ctx context.Context, req *proto.GetArtistsForUserRequest) (*proto.GetArtistsForUserResponse, error) {
 	// First, get the user we want to get the artist for
 	user, err := clients.GetUser(req.UserId)
 	if err != nil {
@@ -49,51 +91,88 @@ func (s *server) UpdateArtists(ctx context.Context, req *proto.UpdateArtistsRequ
 		return nil, status.Error(codes.Internal, "failed to get users artists")
 	}
 
-	// Loop through the artists and update them in the database
+	// Build the response
+	var responseArtists []string
 	for _, artist := range artists.Artists {
-		dbArtist, err := db.GetArtistBySpotifyID(artist.ID.String())
-		if err != nil {
-			dbArtist, err = db.CreateArtist(artist.Name, artist.ID.String())
-			if err != nil {
-				return nil, status.Error(codes.Internal, "failed to create artist")
-			}
-		} else {
-			dbArtist.LastUpdated = time.Now()
-			if err := db.DB.Save(dbArtist).Error; err != nil {
-				return nil, status.Error(codes.Internal, "failed to update artist")
-			}
-		}
-
-		zap.S().Infof("Updated artist %s", dbArtist.Name)
+		responseArtists = append(responseArtists, artist.ID.String())
 	}
 
-	return &empty.Empty{}, nil
+	return &proto.GetArtistsForUserResponse{
+		ArtistIds: responseArtists,
+	}, nil
 }
 
-func (s *server) GetArtists(ctx context.Context, req *proto.GetArtistsRequest) (*proto.GetArtistsResponse, error) {
-	// Getartists with the limit and offset
-	if req.Limit == 0 {
-		req.Limit = 20
+func (s *server) GetReleasesForArtist(ctx context.Context, req *proto.GetReleasesRequest) (*proto.GetReleasesResponse, error) {
+	// Create an oauth token
+	config := &clientcredentials.Config{
+		ClientID:     os.Getenv("SPOTIFY_ID"),
+		ClientSecret: os.Getenv("SPOTIFY_SECRET"),
+		TokenURL:     spotifyauth.TokenURL,
 	}
-	if req.Limit > 50 {
-		req.Limit = 50
-	}
-	artists, err := db.GetArtists(req.Limit, req.Offset)
+	token, err := config.Token(ctx)
 	if err != nil {
-		return nil, status.Error(codes.Internal, "failed to get artists")
+		return nil, status.Error(codes.Internal, "failed to get token")
 	}
 
-	// Convert the artists to protobuf
-	var pbArtists []*proto.Artist
-	for _, artist := range artists {
-		id := strconv.Itoa(int(artist.ID))
-		pbArtists = append(pbArtists, &proto.Artist{
-			Id:          id,
-			Name:        artist.Name,
-			SpotifyId:   artist.SpotifyID,
-			LastUpdated: artist.LastUpdated.Format(time.RFC3339),
+	// Next, get all the albums for the artist
+	httpClient := spotifyauth.New().Client(ctx, token)
+	client := spotify.New(httpClient)
+	albumTypes := []spotify.AlbumType{spotify.AlbumTypeAlbum, spotify.AlbumTypeSingle, spotify.AlbumTypeCompilation}
+	albums, err := client.GetArtistAlbums(ctx, spotify.ID(req.ArtistId), albumTypes, spotify.Limit(50))
+	if err != nil {
+		return nil, status.Error(codes.Internal, "failed to get artist albums")
+	}
+
+	// Build the response
+	var responseAlbums []*proto.SpotifyRelease
+	for _, album := range albums.Albums {
+		// Build the images
+		var images []*proto.SpotifyImage
+		for _, image := range album.Images {
+			images = append(images, &proto.SpotifyImage{
+				Height: int32(image.Height),
+				Width:  int32(image.Width),
+				Url:    image.URL,
+			})
+		}
+
+		responseAlbums = append(responseAlbums, &proto.SpotifyRelease{
+			Id:          album.ID.String(),
+			Name:        album.Name,
+			Images:      images,
+			ReleaseDate: album.ReleaseDate,
 		})
 	}
 
-	return &proto.GetArtistsResponse{Artists: pbArtists}, nil
+	// Handle pagination
+	for albums.Next != "" {
+		zap.S().Info("Getting next page of albums", zap.String("next", albums.Next))
+		err = client.NextPage(ctx, albums)
+		if err != nil {
+			return nil, status.Error(codes.Internal, "failed to get artist albums")
+		}
+
+		for _, album := range albums.Albums {
+			// Build the images
+			var images []*proto.SpotifyImage
+			for _, image := range album.Images {
+				images = append(images, &proto.SpotifyImage{
+					Height: int32(image.Height),
+					Width:  int32(image.Width),
+					Url:    image.URL,
+				})
+			}
+
+			responseAlbums = append(responseAlbums, &proto.SpotifyRelease{
+				Id:          album.ID.String(),
+				Name:        album.Name,
+				Images:      images,
+				ReleaseDate: album.ReleaseDate,
+			})
+		}
+	}
+
+	return &proto.GetReleasesResponse{
+		Releases: responseAlbums,
+	}, nil
 }

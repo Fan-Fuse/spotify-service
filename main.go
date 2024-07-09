@@ -8,7 +8,6 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/Fan-Fuse/spotify-service/clients"
-	"github.com/Fan-Fuse/spotify-service/db"
 	"github.com/Fan-Fuse/spotify-service/service"
 )
 
@@ -24,9 +23,6 @@ func init() {
 	// Initialize service clients
 	clients.InitConfig(os.Getenv("CONFIG_ADDRESS"))
 	clients.InitUserClient(os.Getenv("USER_ADDRESS"))
-
-	// Initialize database
-	db.Init()
 }
 
 func main() {

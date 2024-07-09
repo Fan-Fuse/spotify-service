@@ -7,7 +7,6 @@
 package proto
 
 import (
-	empty "github.com/golang/protobuf/ptypes/empty"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -21,20 +20,19 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Artist struct {
+type SpotifyArtist struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name        string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	ImageUrl    string `protobuf:"bytes,3,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
-	SpotifyId   string `protobuf:"bytes,4,opt,name=spotify_id,json=spotifyId,proto3" json:"spotify_id,omitempty"`
-	LastUpdated string `protobuf:"bytes,5,opt,name=last_updated,json=lastUpdated,proto3" json:"last_updated,omitempty"`
+	Id     string          `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name   string          `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Images []*SpotifyImage `protobuf:"bytes,3,rep,name=images,proto3" json:"images,omitempty"`
+	Genres []string        `protobuf:"bytes,4,rep,name=genres,proto3" json:"genres,omitempty"`
 }
 
-func (x *Artist) Reset() {
-	*x = Artist{}
+func (x *SpotifyArtist) Reset() {
+	*x = SpotifyArtist{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_spotify_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -42,13 +40,13 @@ func (x *Artist) Reset() {
 	}
 }
 
-func (x *Artist) String() string {
+func (x *SpotifyArtist) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Artist) ProtoMessage() {}
+func (*SpotifyArtist) ProtoMessage() {}
 
-func (x *Artist) ProtoReflect() protoreflect.Message {
+func (x *SpotifyArtist) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_spotify_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,57 +58,54 @@ func (x *Artist) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Artist.ProtoReflect.Descriptor instead.
-func (*Artist) Descriptor() ([]byte, []int) {
+// Deprecated: Use SpotifyArtist.ProtoReflect.Descriptor instead.
+func (*SpotifyArtist) Descriptor() ([]byte, []int) {
 	return file_proto_spotify_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Artist) GetId() string {
+func (x *SpotifyArtist) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Artist) GetName() string {
+func (x *SpotifyArtist) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Artist) GetImageUrl() string {
+func (x *SpotifyArtist) GetImages() []*SpotifyImage {
 	if x != nil {
-		return x.ImageUrl
+		return x.Images
 	}
-	return ""
+	return nil
 }
 
-func (x *Artist) GetSpotifyId() string {
+func (x *SpotifyArtist) GetGenres() []string {
 	if x != nil {
-		return x.SpotifyId
+		return x.Genres
 	}
-	return ""
+	return nil
 }
 
-func (x *Artist) GetLastUpdated() string {
-	if x != nil {
-		return x.LastUpdated
-	}
-	return ""
-}
-
-// UpdateArtists is a request to update the artists for a user (this will be replaced with a proper update algorithm)
-type UpdateArtistsRequest struct {
+type SpotifyRelease struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId string `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Id          string          `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name        string          `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Images      []*SpotifyImage `protobuf:"bytes,3,rep,name=images,proto3" json:"images,omitempty"`
+	ArtistIds   []string        `protobuf:"bytes,4,rep,name=artist_ids,json=artistIds,proto3" json:"artist_ids,omitempty"`
+	ReleaseDate string          `protobuf:"bytes,5,opt,name=release_date,json=releaseDate,proto3" json:"release_date,omitempty"`
+	Genres      []string        `protobuf:"bytes,6,rep,name=genres,proto3" json:"genres,omitempty"`
 }
 
-func (x *UpdateArtistsRequest) Reset() {
-	*x = UpdateArtistsRequest{}
+func (x *SpotifyRelease) Reset() {
+	*x = SpotifyRelease{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_spotify_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -118,13 +113,13 @@ func (x *UpdateArtistsRequest) Reset() {
 	}
 }
 
-func (x *UpdateArtistsRequest) String() string {
+func (x *SpotifyRelease) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpdateArtistsRequest) ProtoMessage() {}
+func (*SpotifyRelease) ProtoMessage() {}
 
-func (x *UpdateArtistsRequest) ProtoReflect() protoreflect.Message {
+func (x *SpotifyRelease) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_spotify_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -136,29 +131,65 @@ func (x *UpdateArtistsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpdateArtistsRequest.ProtoReflect.Descriptor instead.
-func (*UpdateArtistsRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use SpotifyRelease.ProtoReflect.Descriptor instead.
+func (*SpotifyRelease) Descriptor() ([]byte, []int) {
 	return file_proto_spotify_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *UpdateArtistsRequest) GetUserId() string {
+func (x *SpotifyRelease) GetId() string {
 	if x != nil {
-		return x.UserId
+		return x.Id
 	}
 	return ""
 }
 
-type GetArtistsRequest struct {
+func (x *SpotifyRelease) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *SpotifyRelease) GetImages() []*SpotifyImage {
+	if x != nil {
+		return x.Images
+	}
+	return nil
+}
+
+func (x *SpotifyRelease) GetArtistIds() []string {
+	if x != nil {
+		return x.ArtistIds
+	}
+	return nil
+}
+
+func (x *SpotifyRelease) GetReleaseDate() string {
+	if x != nil {
+		return x.ReleaseDate
+	}
+	return ""
+}
+
+func (x *SpotifyRelease) GetGenres() []string {
+	if x != nil {
+		return x.Genres
+	}
+	return nil
+}
+
+type SpotifyImage struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Limit  int32 `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
-	Offset int32 `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"`
+	Url    string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
+	Width  int32  `protobuf:"varint,2,opt,name=width,proto3" json:"width,omitempty"`
+	Height int32  `protobuf:"varint,3,opt,name=height,proto3" json:"height,omitempty"`
 }
 
-func (x *GetArtistsRequest) Reset() {
-	*x = GetArtistsRequest{}
+func (x *SpotifyImage) Reset() {
+	*x = SpotifyImage{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_spotify_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -166,13 +197,13 @@ func (x *GetArtistsRequest) Reset() {
 	}
 }
 
-func (x *GetArtistsRequest) String() string {
+func (x *SpotifyImage) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetArtistsRequest) ProtoMessage() {}
+func (*SpotifyImage) ProtoMessage() {}
 
-func (x *GetArtistsRequest) ProtoReflect() protoreflect.Message {
+func (x *SpotifyImage) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_spotify_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -184,35 +215,42 @@ func (x *GetArtistsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetArtistsRequest.ProtoReflect.Descriptor instead.
-func (*GetArtistsRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use SpotifyImage.ProtoReflect.Descriptor instead.
+func (*SpotifyImage) Descriptor() ([]byte, []int) {
 	return file_proto_spotify_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetArtistsRequest) GetLimit() int32 {
+func (x *SpotifyImage) GetUrl() string {
 	if x != nil {
-		return x.Limit
+		return x.Url
+	}
+	return ""
+}
+
+func (x *SpotifyImage) GetWidth() int32 {
+	if x != nil {
+		return x.Width
 	}
 	return 0
 }
 
-func (x *GetArtistsRequest) GetOffset() int32 {
+func (x *SpotifyImage) GetHeight() int32 {
 	if x != nil {
-		return x.Offset
+		return x.Height
 	}
 	return 0
 }
 
-type GetArtistsResponse struct {
+type GetArtistRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Artists []*Artist `protobuf:"bytes,1,rep,name=artists,proto3" json:"artists,omitempty"`
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (x *GetArtistsResponse) Reset() {
-	*x = GetArtistsResponse{}
+func (x *GetArtistRequest) Reset() {
+	*x = GetArtistRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_spotify_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -220,13 +258,13 @@ func (x *GetArtistsResponse) Reset() {
 	}
 }
 
-func (x *GetArtistsResponse) String() string {
+func (x *GetArtistRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetArtistsResponse) ProtoMessage() {}
+func (*GetArtistRequest) ProtoMessage() {}
 
-func (x *GetArtistsResponse) ProtoReflect() protoreflect.Message {
+func (x *GetArtistRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_spotify_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -238,14 +276,202 @@ func (x *GetArtistsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetArtistsResponse.ProtoReflect.Descriptor instead.
-func (*GetArtistsResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetArtistRequest.ProtoReflect.Descriptor instead.
+func (*GetArtistRequest) Descriptor() ([]byte, []int) {
 	return file_proto_spotify_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetArtistsResponse) GetArtists() []*Artist {
+func (x *GetArtistRequest) GetId() string {
 	if x != nil {
-		return x.Artists
+		return x.Id
+	}
+	return ""
+}
+
+type GetArtistsForUserRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId string `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // This is a fanfuse user id
+}
+
+func (x *GetArtistsForUserRequest) Reset() {
+	*x = GetArtistsForUserRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_spotify_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetArtistsForUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetArtistsForUserRequest) ProtoMessage() {}
+
+func (x *GetArtistsForUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_spotify_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetArtistsForUserRequest.ProtoReflect.Descriptor instead.
+func (*GetArtistsForUserRequest) Descriptor() ([]byte, []int) {
+	return file_proto_spotify_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetArtistsForUserRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type GetArtistsForUserResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ArtistIds []string `protobuf:"bytes,1,rep,name=artist_ids,json=artistIds,proto3" json:"artist_ids,omitempty"` // These are spotify artist ids
+}
+
+func (x *GetArtistsForUserResponse) Reset() {
+	*x = GetArtistsForUserResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_spotify_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetArtistsForUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetArtistsForUserResponse) ProtoMessage() {}
+
+func (x *GetArtistsForUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_spotify_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetArtistsForUserResponse.ProtoReflect.Descriptor instead.
+func (*GetArtistsForUserResponse) Descriptor() ([]byte, []int) {
+	return file_proto_spotify_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetArtistsForUserResponse) GetArtistIds() []string {
+	if x != nil {
+		return x.ArtistIds
+	}
+	return nil
+}
+
+type GetReleasesRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ArtistId string `protobuf:"bytes,1,opt,name=artist_id,json=artistId,proto3" json:"artist_id,omitempty"`
+}
+
+func (x *GetReleasesRequest) Reset() {
+	*x = GetReleasesRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_spotify_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetReleasesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetReleasesRequest) ProtoMessage() {}
+
+func (x *GetReleasesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_spotify_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetReleasesRequest.ProtoReflect.Descriptor instead.
+func (*GetReleasesRequest) Descriptor() ([]byte, []int) {
+	return file_proto_spotify_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetReleasesRequest) GetArtistId() string {
+	if x != nil {
+		return x.ArtistId
+	}
+	return ""
+}
+
+type GetReleasesResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Releases []*SpotifyRelease `protobuf:"bytes,1,rep,name=releases,proto3" json:"releases,omitempty"`
+}
+
+func (x *GetReleasesResponse) Reset() {
+	*x = GetReleasesResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_spotify_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetReleasesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetReleasesResponse) ProtoMessage() {}
+
+func (x *GetReleasesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_spotify_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetReleasesResponse.ProtoReflect.Descriptor instead.
+func (*GetReleasesResponse) Descriptor() ([]byte, []int) {
+	return file_proto_spotify_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetReleasesResponse) GetReleases() []*SpotifyRelease {
+	if x != nil {
+		return x.Releases
 	}
 	return nil
 }
@@ -254,41 +480,67 @@ var File_proto_spotify_proto protoreflect.FileDescriptor
 
 var file_proto_spotify_proto_rawDesc = []byte{
 	0x0a, 0x13, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x07, 0x73, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x1a, 0x1b,
-	0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f,
-	0x65, 0x6d, 0x70, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x8b, 0x01, 0x0a, 0x06,
-	0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x6d,
-	0x61, 0x67, 0x65, 0x5f, 0x75, 0x72, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69,
-	0x6d, 0x61, 0x67, 0x65, 0x55, 0x72, 0x6c, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x70, 0x6f, 0x74, 0x69,
-	0x66, 0x79, 0x5f, 0x69, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x70, 0x6f,
-	0x74, 0x69, 0x66, 0x79, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x6c, 0x61, 0x73, 0x74, 0x5f, 0x75,
-	0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x6c, 0x61,
-	0x73, 0x74, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x22, 0x2f, 0x0a, 0x14, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x41, 0x0a, 0x11, 0x47, 0x65,
-	0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x14, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05,
-	0x6c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x22, 0x3f, 0x0a,
-	0x12, 0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x29, 0x0a, 0x07, 0x61, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73, 0x18, 0x01,
-	0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x73, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x2e, 0x41,
-	0x72, 0x74, 0x69, 0x73, 0x74, 0x52, 0x07, 0x61, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73, 0x32, 0xa3,
-	0x01, 0x0a, 0x0e, 0x53, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x12, 0x48, 0x0a, 0x0d, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x72, 0x74, 0x69, 0x73,
-	0x74, 0x73, 0x12, 0x1d, 0x2e, 0x73, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x2e, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x47, 0x0a, 0x0a, 0x47,
-	0x65, 0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73, 0x12, 0x1a, 0x2e, 0x73, 0x70, 0x6f, 0x74,
-	0x69, 0x66, 0x79, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x73, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x2e,
-	0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x00, 0x42, 0x08, 0x5a, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x07, 0x73, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x22, 0x7a,
+	0x0a, 0x0d, 0x53, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12,
+	0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e,
+	0x61, 0x6d, 0x65, 0x12, 0x2d, 0x0a, 0x06, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x73, 0x18, 0x03, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x73, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x2e, 0x53, 0x70,
+	0x6f, 0x74, 0x69, 0x66, 0x79, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x52, 0x06, 0x69, 0x6d, 0x61, 0x67,
+	0x65, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x67, 0x65, 0x6e, 0x72, 0x65, 0x73, 0x18, 0x04, 0x20, 0x03,
+	0x28, 0x09, 0x52, 0x06, 0x67, 0x65, 0x6e, 0x72, 0x65, 0x73, 0x22, 0xbd, 0x01, 0x0a, 0x0e, 0x53,
+	0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x12, 0x0e, 0x0a,
+	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a,
+	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d,
+	0x65, 0x12, 0x2d, 0x0a, 0x06, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x15, 0x2e, 0x73, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x2e, 0x53, 0x70, 0x6f, 0x74,
+	0x69, 0x66, 0x79, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x52, 0x06, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x73,
+	0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x72, 0x74, 0x69, 0x73, 0x74, 0x5f, 0x69, 0x64, 0x73, 0x18, 0x04,
+	0x20, 0x03, 0x28, 0x09, 0x52, 0x09, 0x61, 0x72, 0x74, 0x69, 0x73, 0x74, 0x49, 0x64, 0x73, 0x12,
+	0x21, 0x0a, 0x0c, 0x72, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x5f, 0x64, 0x61, 0x74, 0x65, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x72, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x44, 0x61,
+	0x74, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x67, 0x65, 0x6e, 0x72, 0x65, 0x73, 0x18, 0x06, 0x20, 0x03,
+	0x28, 0x09, 0x52, 0x06, 0x67, 0x65, 0x6e, 0x72, 0x65, 0x73, 0x22, 0x4e, 0x0a, 0x0c, 0x53, 0x70,
+	0x6f, 0x74, 0x69, 0x66, 0x79, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72,
+	0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x14, 0x0a, 0x05,
+	0x77, 0x69, 0x64, 0x74, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x77, 0x69, 0x64,
+	0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x05, 0x52, 0x06, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x22, 0x22, 0x0a, 0x10, 0x47, 0x65,
+	0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x33,
+	0x0a, 0x18, 0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73, 0x46, 0x6f, 0x72, 0x55,
+	0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73,
+	0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65,
+	0x72, 0x49, 0x64, 0x22, 0x3a, 0x0a, 0x19, 0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74,
+	0x73, 0x46, 0x6f, 0x72, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x72, 0x74, 0x69, 0x73, 0x74, 0x5f, 0x69, 0x64, 0x73, 0x18, 0x01,
+	0x20, 0x03, 0x28, 0x09, 0x52, 0x09, 0x61, 0x72, 0x74, 0x69, 0x73, 0x74, 0x49, 0x64, 0x73, 0x22,
+	0x31, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x61, 0x72, 0x74, 0x69, 0x73, 0x74, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x61, 0x72, 0x74, 0x69, 0x73, 0x74,
+	0x49, 0x64, 0x22, 0x4a, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x33, 0x0a, 0x08, 0x72, 0x65, 0x6c,
+	0x65, 0x61, 0x73, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x73, 0x70,
+	0x6f, 0x74, 0x69, 0x66, 0x79, 0x2e, 0x53, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x52, 0x65, 0x6c,
+	0x65, 0x61, 0x73, 0x65, 0x52, 0x08, 0x72, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x73, 0x32, 0x85,
+	0x02, 0x0a, 0x0e, 0x53, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x12, 0x40, 0x0a, 0x09, 0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x12, 0x19,
+	0x2e, 0x73, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69,
+	0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x73, 0x70, 0x6f, 0x74,
+	0x69, 0x66, 0x79, 0x2e, 0x53, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79, 0x41, 0x72, 0x74, 0x69, 0x73,
+	0x74, 0x22, 0x00, 0x12, 0x5c, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74,
+	0x73, 0x46, 0x6f, 0x72, 0x55, 0x73, 0x65, 0x72, 0x12, 0x21, 0x2e, 0x73, 0x70, 0x6f, 0x74, 0x69,
+	0x66, 0x79, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73, 0x46, 0x6f, 0x72,
+	0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x73, 0x70,
+	0x6f, 0x74, 0x69, 0x66, 0x79, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x73,
+	0x46, 0x6f, 0x72, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x00, 0x12, 0x53, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x73,
+	0x46, 0x6f, 0x72, 0x41, 0x72, 0x74, 0x69, 0x73, 0x74, 0x12, 0x1b, 0x2e, 0x73, 0x70, 0x6f, 0x74,
+	0x69, 0x66, 0x79, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x73, 0x70, 0x6f, 0x74, 0x69, 0x66, 0x79,
+	0x2e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x6c, 0x65, 0x61, 0x73, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x08, 0x5a, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -303,25 +555,32 @@ func file_proto_spotify_proto_rawDescGZIP() []byte {
 	return file_proto_spotify_proto_rawDescData
 }
 
-var file_proto_spotify_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_spotify_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_proto_spotify_proto_goTypes = []interface{}{
-	(*Artist)(nil),               // 0: spotify.Artist
-	(*UpdateArtistsRequest)(nil), // 1: spotify.UpdateArtistsRequest
-	(*GetArtistsRequest)(nil),    // 2: spotify.GetArtistsRequest
-	(*GetArtistsResponse)(nil),   // 3: spotify.GetArtistsResponse
-	(*empty.Empty)(nil),          // 4: google.protobuf.Empty
+	(*SpotifyArtist)(nil),             // 0: spotify.SpotifyArtist
+	(*SpotifyRelease)(nil),            // 1: spotify.SpotifyRelease
+	(*SpotifyImage)(nil),              // 2: spotify.SpotifyImage
+	(*GetArtistRequest)(nil),          // 3: spotify.GetArtistRequest
+	(*GetArtistsForUserRequest)(nil),  // 4: spotify.GetArtistsForUserRequest
+	(*GetArtistsForUserResponse)(nil), // 5: spotify.GetArtistsForUserResponse
+	(*GetReleasesRequest)(nil),        // 6: spotify.GetReleasesRequest
+	(*GetReleasesResponse)(nil),       // 7: spotify.GetReleasesResponse
 }
 var file_proto_spotify_proto_depIdxs = []int32{
-	0, // 0: spotify.GetArtistsResponse.artists:type_name -> spotify.Artist
-	1, // 1: spotify.SpotifyService.UpdateArtists:input_type -> spotify.UpdateArtistsRequest
-	2, // 2: spotify.SpotifyService.GetArtists:input_type -> spotify.GetArtistsRequest
-	4, // 3: spotify.SpotifyService.UpdateArtists:output_type -> google.protobuf.Empty
-	3, // 4: spotify.SpotifyService.GetArtists:output_type -> spotify.GetArtistsResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: spotify.SpotifyArtist.images:type_name -> spotify.SpotifyImage
+	2, // 1: spotify.SpotifyRelease.images:type_name -> spotify.SpotifyImage
+	1, // 2: spotify.GetReleasesResponse.releases:type_name -> spotify.SpotifyRelease
+	3, // 3: spotify.SpotifyService.GetArtist:input_type -> spotify.GetArtistRequest
+	4, // 4: spotify.SpotifyService.GetArtistsForUser:input_type -> spotify.GetArtistsForUserRequest
+	6, // 5: spotify.SpotifyService.GetReleasesForArtist:input_type -> spotify.GetReleasesRequest
+	0, // 6: spotify.SpotifyService.GetArtist:output_type -> spotify.SpotifyArtist
+	5, // 7: spotify.SpotifyService.GetArtistsForUser:output_type -> spotify.GetArtistsForUserResponse
+	7, // 8: spotify.SpotifyService.GetReleasesForArtist:output_type -> spotify.GetReleasesResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_proto_spotify_proto_init() }
@@ -331,7 +590,7 @@ func file_proto_spotify_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_proto_spotify_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Artist); i {
+			switch v := v.(*SpotifyArtist); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -343,7 +602,7 @@ func file_proto_spotify_proto_init() {
 			}
 		}
 		file_proto_spotify_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UpdateArtistsRequest); i {
+			switch v := v.(*SpotifyRelease); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -355,7 +614,7 @@ func file_proto_spotify_proto_init() {
 			}
 		}
 		file_proto_spotify_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetArtistsRequest); i {
+			switch v := v.(*SpotifyImage); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -367,7 +626,55 @@ func file_proto_spotify_proto_init() {
 			}
 		}
 		file_proto_spotify_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetArtistsResponse); i {
+			switch v := v.(*GetArtistRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_spotify_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetArtistsForUserRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_spotify_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetArtistsForUserResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_spotify_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetReleasesRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_spotify_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetReleasesResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -385,7 +692,7 @@ func file_proto_spotify_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_spotify_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

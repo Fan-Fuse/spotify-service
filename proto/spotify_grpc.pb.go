@@ -8,7 +8,6 @@ package proto
 
 import (
 	context "context"
-	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,8 +22,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SpotifyServiceClient interface {
-	UpdateArtists(ctx context.Context, in *UpdateArtistsRequest, opts ...grpc.CallOption) (*empty.Empty, error)
-	GetArtists(ctx context.Context, in *GetArtistsRequest, opts ...grpc.CallOption) (*GetArtistsResponse, error)
+	GetArtist(ctx context.Context, in *GetArtistRequest, opts ...grpc.CallOption) (*SpotifyArtist, error)
+	GetArtistsForUser(ctx context.Context, in *GetArtistsForUserRequest, opts ...grpc.CallOption) (*GetArtistsForUserResponse, error)
+	GetReleasesForArtist(ctx context.Context, in *GetReleasesRequest, opts ...grpc.CallOption) (*GetReleasesResponse, error)
 }
 
 type spotifyServiceClient struct {
@@ -35,18 +35,27 @@ func NewSpotifyServiceClient(cc grpc.ClientConnInterface) SpotifyServiceClient {
 	return &spotifyServiceClient{cc}
 }
 
-func (c *spotifyServiceClient) UpdateArtists(ctx context.Context, in *UpdateArtistsRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
-	err := c.cc.Invoke(ctx, "/spotify.SpotifyService/UpdateArtists", in, out, opts...)
+func (c *spotifyServiceClient) GetArtist(ctx context.Context, in *GetArtistRequest, opts ...grpc.CallOption) (*SpotifyArtist, error) {
+	out := new(SpotifyArtist)
+	err := c.cc.Invoke(ctx, "/spotify.SpotifyService/GetArtist", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *spotifyServiceClient) GetArtists(ctx context.Context, in *GetArtistsRequest, opts ...grpc.CallOption) (*GetArtistsResponse, error) {
-	out := new(GetArtistsResponse)
-	err := c.cc.Invoke(ctx, "/spotify.SpotifyService/GetArtists", in, out, opts...)
+func (c *spotifyServiceClient) GetArtistsForUser(ctx context.Context, in *GetArtistsForUserRequest, opts ...grpc.CallOption) (*GetArtistsForUserResponse, error) {
+	out := new(GetArtistsForUserResponse)
+	err := c.cc.Invoke(ctx, "/spotify.SpotifyService/GetArtistsForUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *spotifyServiceClient) GetReleasesForArtist(ctx context.Context, in *GetReleasesRequest, opts ...grpc.CallOption) (*GetReleasesResponse, error) {
+	out := new(GetReleasesResponse)
+	err := c.cc.Invoke(ctx, "/spotify.SpotifyService/GetReleasesForArtist", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +66,9 @@ func (c *spotifyServiceClient) GetArtists(ctx context.Context, in *GetArtistsReq
 // All implementations must embed UnimplementedSpotifyServiceServer
 // for forward compatibility
 type SpotifyServiceServer interface {
-	UpdateArtists(context.Context, *UpdateArtistsRequest) (*empty.Empty, error)
-	GetArtists(context.Context, *GetArtistsRequest) (*GetArtistsResponse, error)
+	GetArtist(context.Context, *GetArtistRequest) (*SpotifyArtist, error)
+	GetArtistsForUser(context.Context, *GetArtistsForUserRequest) (*GetArtistsForUserResponse, error)
+	GetReleasesForArtist(context.Context, *GetReleasesRequest) (*GetReleasesResponse, error)
 	mustEmbedUnimplementedSpotifyServiceServer()
 }
 
@@ -66,11 +76,14 @@ type SpotifyServiceServer interface {
 type UnimplementedSpotifyServiceServer struct {
 }
 
-func (UnimplementedSpotifyServiceServer) UpdateArtists(context.Context, *UpdateArtistsRequest) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateArtists not implemented")
+func (UnimplementedSpotifyServiceServer) GetArtist(context.Context, *GetArtistRequest) (*SpotifyArtist, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArtist not implemented")
 }
-func (UnimplementedSpotifyServiceServer) GetArtists(context.Context, *GetArtistsRequest) (*GetArtistsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetArtists not implemented")
+func (UnimplementedSpotifyServiceServer) GetArtistsForUser(context.Context, *GetArtistsForUserRequest) (*GetArtistsForUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArtistsForUser not implemented")
+}
+func (UnimplementedSpotifyServiceServer) GetReleasesForArtist(context.Context, *GetReleasesRequest) (*GetReleasesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetReleasesForArtist not implemented")
 }
 func (UnimplementedSpotifyServiceServer) mustEmbedUnimplementedSpotifyServiceServer() {}
 
@@ -85,38 +98,56 @@ func RegisterSpotifyServiceServer(s grpc.ServiceRegistrar, srv SpotifyServiceSer
 	s.RegisterService(&SpotifyService_ServiceDesc, srv)
 }
 
-func _SpotifyService_UpdateArtists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateArtistsRequest)
+func _SpotifyService_GetArtist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArtistRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SpotifyServiceServer).UpdateArtists(ctx, in)
+		return srv.(SpotifyServiceServer).GetArtist(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/spotify.SpotifyService/UpdateArtists",
+		FullMethod: "/spotify.SpotifyService/GetArtist",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SpotifyServiceServer).UpdateArtists(ctx, req.(*UpdateArtistsRequest))
+		return srv.(SpotifyServiceServer).GetArtist(ctx, req.(*GetArtistRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SpotifyService_GetArtists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetArtistsRequest)
+func _SpotifyService_GetArtistsForUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArtistsForUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SpotifyServiceServer).GetArtists(ctx, in)
+		return srv.(SpotifyServiceServer).GetArtistsForUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/spotify.SpotifyService/GetArtists",
+		FullMethod: "/spotify.SpotifyService/GetArtistsForUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SpotifyServiceServer).GetArtists(ctx, req.(*GetArtistsRequest))
+		return srv.(SpotifyServiceServer).GetArtistsForUser(ctx, req.(*GetArtistsForUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SpotifyService_GetReleasesForArtist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetReleasesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SpotifyServiceServer).GetReleasesForArtist(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/spotify.SpotifyService/GetReleasesForArtist",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SpotifyServiceServer).GetReleasesForArtist(ctx, req.(*GetReleasesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -129,12 +160,16 @@ var SpotifyService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*SpotifyServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "UpdateArtists",
-			Handler:    _SpotifyService_UpdateArtists_Handler,
+			MethodName: "GetArtist",
+			Handler:    _SpotifyService_GetArtist_Handler,
 		},
 		{
-			MethodName: "GetArtists",
-			Handler:    _SpotifyService_GetArtists_Handler,
+			MethodName: "GetArtistsForUser",
+			Handler:    _SpotifyService_GetArtistsForUser_Handler,
+		},
+		{
+			MethodName: "GetReleasesForArtist",
+			Handler:    _SpotifyService_GetReleasesForArtist_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

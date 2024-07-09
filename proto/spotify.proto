@@ -4,31 +4,50 @@ package spotify;
 
 option go_package = "proto/";
 
-import "google/protobuf/empty.proto";
-
 service SpotifyService {
-    rpc UpdateArtists(UpdateArtistsRequest) returns (google.protobuf.Empty) {}
-    rpc GetArtists(GetArtistsRequest) returns (GetArtistsResponse) {}
+    rpc GetArtist(GetArtistRequest) returns (SpotifyArtist) {}
+    rpc GetArtistsForUser(GetArtistsForUserRequest) returns (GetArtistsForUserResponse) {}
+    rpc GetReleasesForArtist(GetReleasesRequest) returns (GetReleasesResponse) {}
 }
 
-message Artist {
+message SpotifyArtist {
     string id = 1;
     string name = 2;
-    string image_url = 3;
-    string spotify_id = 4;
-    string last_updated = 5;
+    repeated SpotifyImage images = 3;
+    repeated string genres = 4;
 }
 
-// UpdateArtists is a request to update the artists for a user (this will be replaced with a proper update algorithm)
-message UpdateArtistsRequest {
-    string user_id = 1;
+message SpotifyRelease {
+    string id = 1;
+    string name = 2;
+    repeated SpotifyImage images = 3;
+    repeated string artist_ids = 4;
+    string release_date = 5;
+    repeated string genres = 6;
 }
 
-message GetArtistsRequest {
-    int32 limit = 1;
-    int32 offset = 2;
+message SpotifyImage {
+    string url = 1;
+    int32 width = 2;
+    int32 height = 3;
 }
 
-message GetArtistsResponse {
-    repeated Artist artists = 1;
+message GetArtistRequest {
+    string id = 1;
+}
+
+message GetArtistsForUserRequest {
+    string user_id = 1; // This is a fanfuse user id
+}
+
+message GetArtistsForUserResponse {
+    repeated string artist_ids = 1; // These are spotify artist ids
+}
+
+message GetReleasesRequest {
+    string artist_id = 1;
+}
+
+message GetReleasesResponse {
+    repeated SpotifyRelease releases = 1;
 }
